@@ -46,12 +46,7 @@
     display:flex;align-items:center;justify-content:center;
     opacity:0;pointer-events:none;transition:opacity .9s ease}
   .logo-overlay.show{opacity:1}
-  .logo-overlay img{
-    height:58%;width:auto;
-    animation:logoGlow 3.2s ease-in-out infinite}
-  @keyframes logoGlow{
-    0%,100%{filter:drop-shadow(0 0 8px rgba(238,192,106,.22)) drop-shadow(0 0 20px rgba(229,120,46,.1))}
-    50%{filter:drop-shadow(0 0 12px rgba(238,192,106,.42)) drop-shadow(0 0 30px rgba(229,120,46,.2))}}
+  .logo-overlay img{height:58%;width:auto}
   .ember{
     position:absolute;bottom:16%;width:4px;height:4px;border-radius:50%;
     background:var(--gold-bright);opacity:0;
@@ -217,6 +212,8 @@
     <span class="ember" style="left:56%;animation-delay:2.6s"></span>
     <span class="ember" style="left:47%;animation-delay:3.4s"></span>
     <span class="ember" style="left:53%;animation-delay:4.5s"></span>
+    <span class="ember" style="left:41%;animation-delay:2s"></span>
+    <span class="ember" style="left:59%;animation-delay:3.9s"></span>
     <img id="logoImg" alt="Kindling Advisory">
   </div>
   <span class="cap" id="cap"></span>
