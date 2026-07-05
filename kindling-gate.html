@@ -343,6 +343,7 @@
   }
 
   function q1(asProxy){
+    asProxy = (asProxy === true);   /* button clicks pass an event object here */
     var opts = [
       {t:"⚗️ Software Sorcerers", d:"SaaS, fintech, AI — 'software' means everything these days", v:"pass", n:"the Software Sorcerers"},
       {t:"🔬 Deeptech Alchemists", d:"Years in the lab, world-changing brews", v:"pass", n:"the Deeptech Alchemists", deep:true},
