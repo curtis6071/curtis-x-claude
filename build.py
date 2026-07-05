@@ -4,12 +4,16 @@ artwork in assets/web/ as base64 data URIs."""
 import base64, os, pathlib
 
 ROOT = pathlib.Path(__file__).parent
-IMAGES = ["mountain", "tavern", "dragon", "camp", "summit", "gate", "gateopen"]
+IMAGES = [
+    ("mountain", "webp"), ("tavern", "webp"), ("dragon", "webp"),
+    ("camp", "webp"), ("summit", "webp"), ("gate", "webp"),
+    ("gateopen", "webp"), ("nightsky", "webp"), ("logo", "png"),
+]
 
 html = (ROOT / "kindling-gate.template.html").read_text()
-for name in IMAGES:
-    data = (ROOT / "assets" / "web" / f"{name}.webp").read_bytes()
-    uri = "data:image/webp;base64," + base64.b64encode(data).decode()
+for name, ext in IMAGES:
+    data = (ROOT / "assets" / "web" / f"{name}.{ext}").read_bytes()
+    uri = f"data:image/{ext};base64," + base64.b64encode(data).decode()
     token = f"__IMG_{name.upper()}__"
     assert token in html, f"missing token {token}"
     html = html.replace(token, uri)

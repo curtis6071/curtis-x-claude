@@ -40,12 +40,34 @@
     transition:opacity .9s ease, background-position 1.6s cubic-bezier(.4,0,.3,1);
   }
   .layer.on{opacity:1}
+  /* logo screen: the brand floats in the night sky, glowing */
+  .logo-overlay{
+    position:absolute;inset:0;z-index:2;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .9s ease}
+  .logo-overlay.show{opacity:1}
+  .logo-overlay img{
+    height:58%;width:auto;
+    animation:logoGlow 3.2s ease-in-out infinite}
+  @keyframes logoGlow{
+    0%,100%{filter:drop-shadow(0 0 10px rgba(238,192,106,.35)) drop-shadow(0 0 26px rgba(229,120,46,.18))}
+    50%{filter:drop-shadow(0 0 16px rgba(238,192,106,.7)) drop-shadow(0 0 42px rgba(229,120,46,.4))}}
+  .ember{
+    position:absolute;bottom:16%;width:4px;height:4px;border-radius:50%;
+    background:var(--gold-bright);opacity:0;
+    animation:emberUp 5.2s linear infinite}
+  @keyframes emberUp{
+    0%{transform:translate(0,0) scale(1);opacity:0}
+    12%{opacity:.85}
+    100%{transform:translate(14px,-120px) scale(.3);opacity:0}}
+
   .scene .cap{
     position:absolute;left:12px;bottom:10px;z-index:3;
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
     color:var(--gold-bright);
     background:rgba(10,17,31,.62);padding:4px 9px;border-radius:6px}
+  .scene .cap:empty{display:none}
   .scene .vignette{
     position:absolute;inset:0;z-index:2;pointer-events:none;
     box-shadow:inset 0 -26px 30px -18px rgba(10,17,31,.85),
@@ -185,6 +207,14 @@
   <div class="layer" id="layerA"></div>
   <div class="layer" id="layerB"></div>
   <div class="vignette"></div>
+  <div class="logo-overlay" id="logoOv">
+    <span class="ember" style="left:44%;animation-delay:0s"></span>
+    <span class="ember" style="left:50%;animation-delay:1.3s"></span>
+    <span class="ember" style="left:56%;animation-delay:2.6s"></span>
+    <span class="ember" style="left:47%;animation-delay:3.4s"></span>
+    <span class="ember" style="left:53%;animation-delay:4.5s"></span>
+    <img id="logoImg" alt="Kindling Advisory">
+  </div>
   <span class="cap" id="cap"></span>
 </div>
 <div class="hud" id="hud">
@@ -209,13 +239,17 @@
     camp:"__IMG_CAMP__",
     summit:"__IMG_SUMMIT__",
     gate:"__IMG_GATE__",
-    gateopen:"__IMG_GATEOPEN__"
+    gateopen:"__IMG_GATEOPEN__",
+    nightsky:"__IMG_NIGHTSKY__",
+    logo:"__IMG_LOGO__"
   };
 
   var stage = document.getElementById("stage");
   var hud = document.getElementById("hud");
   var capEl = document.getElementById("cap");
   var layers = [document.getElementById("layerA"), document.getElementById("layerB")];
+  var logoOv = document.getElementById("logoOv");
+  document.getElementById("logoImg").src = ART.logo;
   var front = 0, curKey = "";
 
   /* the camera pans up the tall mountain image as the player climbs:
@@ -244,6 +278,12 @@
     front = back; curKey = key;
     capEl.textContent = caption;
   }
+  /* the glowing logo appears only over the night sky */
+  var _setScene = setScene;
+  setScene = function(key, step, cap){
+    _setScene(key, step, cap);
+    logoOv.classList.toggle("show", key === "nightsky");
+  };
 
   /* ================= GAME STATE ================= */
   var hero = { guild:null, guildName:"", deeptech:false, treasure:null, quest:null, realm:null };
@@ -268,7 +308,7 @@
   function intro(){
     hero = { guild:null, guildName:"", deeptech:false, treasure:null, quest:null, realm:null };
     relicsWon = 0; hud.classList.remove("show"); updateHUD();
-    setScene("gate", 0, "The gate stands closed");
+    setScene("nightsky", 0, "");
     show(
       '<p class="eyebrow">Kindling Advisory</p>' +
       '<h1>Beyond this mountain lies the land of <span class="gold">Kindling</span>.</h1>' +
