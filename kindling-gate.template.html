@@ -270,11 +270,12 @@
     relicsWon = 0; hud.classList.remove("show"); updateHUD();
     setScene("gate", 0, "The gate stands closed");
     show(
-      '<p class="eyebrow">The Gate of Kindling</p>' +
+      '<p class="eyebrow">Kindling Advisory presents</p>' +
       '<h1>Beyond this mountain lies the land of <span class="gold">Kindling</span>.</h1>' +
       '<p class="tale">Only the right adventurers may pass. Forge thy company, face the three trials, and climb to the summit.</p>' +
+      '<p class="tale" style="font-size:14px">(A 90-second quest guards our advisory for early-stage founders. Win, and the website opens.)</p>' +
       '<button class="btn" id="begin">⚔️ Begin the climb</button><br>' +
-      '<a class="quiet" href="' + SITE + '">A returning traveller? Pass quietly through the gates →</a>'
+      '<a class="quiet" href="' + SITE + '">In a hurry, traveller? Skip the quest — enter the website directly →</a>'
     );
     on("begin", q1);
   }
@@ -505,7 +506,7 @@
     show(
       '<p class="eyebrow">The gates open</p>' +
       '<div class="banner">⚔️ <strong>Victorious adventurer</strong> — thou art exactly our kind of legend in the land of Kindling. Browse the armoury, and reach out when thou art ready for the fight. 💪🗡</div>' +
-      '<a class="btn" href="' + SITE + '">Enter kindlingadvisory.com →</a>' +
+      '<a class="btn" href="' + SITE + '">Enter the website — kindlingadvisory.com →</a>' +
       '<p class="note">Prototype note: in the live version the gates open straight onto thy website, with this golden banner shown atop it.</p>' +
       '<button class="quiet" id="again">↺ Begin the climb anew</button>'
     );
