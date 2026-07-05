@@ -268,7 +268,7 @@
   function intro(){
     hero = { guild:null, guildName:"", deeptech:false, treasure:null, quest:null, realm:null };
     relicsWon = 0; hud.classList.remove("show"); updateHUD();
-    setScene("gate", 0, "The gate of Kindling");
+    setScene("gate", 0, "The gate stands closed");
     show(
       '<p class="eyebrow">The Gate of Kindling</p>' +
       '<h1>Beyond this mountain lies the land of <span class="gold">Kindling</span>.</h1>' +
@@ -281,7 +281,7 @@
 
   /* ================= THE FORGE ================= */
   function forgeScreen(step, title, sub, opts, grid, pick){
-    setScene("gate", 0, "Before the gate — the forge");
+    setScene("gate", 0, "Before the gate of Kindling");
     var html =
       '<p class="eyebrow">Forge thy company — ' + step + ' of 4</p>' +
       '<h1>' + title + '</h1>' +
@@ -349,7 +349,7 @@
       [
         {t:"🇬🇧 The United Kingdom", v:"pass"},
         {t:"🏰 The realms of Europe", v:"pass"},
-        {t:"🌎 The Americas", v:"pass"},
+        {t:"🇺🇸 The Americas", v:"pass"},
         {t:"🌏 Distant lands beyond", v:"realm"}
       ],
       false,
@@ -500,7 +500,7 @@
   }
 
   function gates(){
-    setScene("gateopen", 0, "The gates open — the land of Kindling");
+    setScene("gateopen", 0, "The land of Kindling");
     hud.classList.remove("show");
     show(
       '<p class="eyebrow">The gates open</p>' +
@@ -543,7 +543,7 @@
 
   function failScreen(kind){
     var f = FAILS[kind];
-    setScene("gate", 0, "The gatekeeper bars the way");
+    setScene("gate", 0, "The gate stays shut");
     show(
       '<p class="eyebrow">The gatekeeper speaks</p>' +
       '<h1>' + f.icon + ' ' + f.title + '</h1>' +
