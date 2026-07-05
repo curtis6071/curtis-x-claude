@@ -208,7 +208,8 @@
     dragon:"__IMG_DRAGON__",
     camp:"__IMG_CAMP__",
     summit:"__IMG_SUMMIT__",
-    gate:"__IMG_GATE__"
+    gate:"__IMG_GATE__",
+    gateopen:"__IMG_GATEOPEN__"
   };
 
   var stage = document.getElementById("stage");
@@ -219,9 +220,8 @@
 
   /* the camera pans up the tall mountain image as the player climbs:
      background-position-y % per progress step (100 = base, 0 = peak) */
-  var CLIMB_Y = [100, 88, 76, 63, 50, 50, 34, 18];
-  var CLIMB_CAPS = ["The trailhead","The lower slopes","The winding path","Halfway camp",
-                    "The high ridge","The high ridge","Above the clouds","The final ascent"];
+  var CLIMB_Y = [100, 62, 30, 12];
+  var CLIMB_CAPS = ["The climb begins","Above the clouds","The final ascent","Beneath the summit"];
 
   function setScene(key, step, cap){
     var isClimb = (key === "climb");
@@ -268,7 +268,7 @@
   function intro(){
     hero = { guild:null, guildName:"", deeptech:false, treasure:null, quest:null, realm:null };
     relicsWon = 0; hud.classList.remove("show"); updateHUD();
-    setScene("climb", 0);
+    setScene("gate", 0, "The gate of Kindling");
     show(
       '<p class="eyebrow">The Gate of Kindling</p>' +
       '<h1>Beyond this mountain lies the land of <span class="gold">Kindling</span>.</h1>' +
@@ -281,7 +281,7 @@
 
   /* ================= THE FORGE ================= */
   function forgeScreen(step, title, sub, opts, grid, pick){
-    setScene("climb", step);
+    setScene("gate", 0, "Before the gate — the forge");
     var html =
       '<p class="eyebrow">Forge thy company — ' + step + ' of 4</p>' +
       '<h1>' + title + '</h1>' +
@@ -371,7 +371,7 @@
   }
 
   function accepted(){
-    setScene("climb", 4);
+    setScene("climb", 0);
     hud.classList.add("show"); updateHUD();
     show(
       '<p class="eyebrow">The forge is complete</p>' +
@@ -397,7 +397,7 @@
          r:'<strong>"Borin said THAT? Borin hates everything."</strong> She squints at the scroll… and reaches for her coin purse.', v:"SOLD"}
       ],
       loot:{icon:"🪙", name:"The First Coin", why:"Proof the world will pay."},
-      afterStep:6
+      afterStep:1
     },
     {
       name:"The Dragon's Hoard", scene:"dragon",
@@ -411,7 +411,7 @@
          r:'<strong>"The oldest spell in the book,"</strong> he growls. <strong>"And yet it works on me EVERY time. TAKE THE GOLD."</strong>', v:"FUNDED"}
       ],
       loot:{icon:"💎", name:"The Dragon's Favor", why:"Capital, on surprisingly reasonable terms."},
-      afterStep:7
+      afterStep:2
     },
     {
       name:"Assemble the Fellowship", scene:"camp",
@@ -425,7 +425,7 @@
          r:'Grumli grips thy shoulder. <strong>"I will check in,"</strong> he vows. <strong>"Just gently bumping this to the top of thine inbox."</strong>', v:"RECRUITED"}
       ],
       loot:{icon:"🚩", name:"The Fellowship Banner", why:"No founder summits alone."},
-      afterStep:7
+      afterStep:3
     }
   ];
 
@@ -500,7 +500,7 @@
   }
 
   function gates(){
-    setScene("gate", 0, "The gates of Kindling");
+    setScene("gateopen", 0, "The gates open — the land of Kindling");
     hud.classList.remove("show");
     show(
       '<p class="eyebrow">The gates open</p>' +

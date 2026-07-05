@@ -4,7 +4,7 @@ artwork in assets/web/ as base64 data URIs."""
 import base64, os, pathlib
 
 ROOT = pathlib.Path(__file__).parent
-IMAGES = ["mountain", "tavern", "dragon", "camp", "summit", "gate"]
+IMAGES = ["mountain", "tavern", "dragon", "camp", "summit", "gate", "gateopen"]
 
 html = (ROOT / "kindling-gate.template.html").read_text()
 for name in IMAGES:
