@@ -1,19 +1,18 @@
 <title>The Gate of Kindling</title>
 <style>
-  /* ============ THE GATE OF KINDLING — prototype ============
-     A single-theme night-world: this page deliberately commits
-     to the dark mountain scene in Kindling's navy + gold. */
+  /* ============ THE GATE OF KINDLING — prototype v2 ============
+     Single-theme night-world in Kindling navy + gold.
+     v2: illustrated scene panel per stage, relic HUD, verdict
+     stamps, loot sparkles, deeptech edge-case fix. */
 
   :root{
-    --night:#0d1526;        /* deep sky */
-    --night-2:#131e35;      /* card navy */
-    --ridge:#1b2946;        /* mountain mid */
-    --ridge-far:#16223c;    /* mountain far */
-    --parchment:#f1e8d4;    /* main text */
-    --mist:#93a0bf;         /* secondary text */
-    --gold:#d4a038;         /* kindling gold */
-    --gold-bright:#eec06a;  /* highlights */
-    --ember:#e5782e;        /* flame core */
+    --night:#0d1526;
+    --night-2:#131e35;
+    --parchment:#f1e8d4;
+    --mist:#93a0bf;
+    --gold:#d4a038;
+    --gold-bright:#eec06a;
+    --ember:#e5782e;
     --line:rgba(212,160,56,.25);
   }
 
@@ -27,41 +26,39 @@
     -webkit-font-smoothing:antialiased;
   }
 
-  /* ---------- night sky + mountain scene ---------- */
+  /* ---------- illustrated scene panel ---------- */
   .scene{
-    position:relative;width:100%;max-width:560px;height:190px;
-    overflow:hidden;flex:none;
-    background:linear-gradient(180deg,#0a111f 0%,#0d1526 55%,#122040 100%);
+    position:relative;width:100%;max-width:560px;height:210px;
+    overflow:hidden;flex:none;background:#0a111f;
   }
-  .star{position:absolute;width:2px;height:2px;border-radius:50%;
-    background:#cfd8ee;opacity:.7;animation:twinkle 3.5s ease-in-out infinite}
-  .peak{position:absolute;bottom:0;width:100%;height:100%}
-  .peak.far{clip-path:polygon(0 100%,0 62%,18% 40%,33% 58%,52% 30%,68% 52%,84% 36%,100% 58%,100% 100%);
-    background:var(--ridge-far)}
-  .peak.near{clip-path:polygon(0 100%,0 78%,22% 55%,38% 70%,50% 38%,63% 60%,80% 46%,100% 72%,100% 100%);
-    background:var(--ridge)}
-  .moon{position:absolute;top:18px;right:26px;width:34px;height:34px;border-radius:50%;
-    background:radial-gradient(circle at 35% 35%,#f5ecd8,#c9c2ad 70%);
-    box-shadow:0 0 28px 6px rgba(240,230,205,.18)}
-  .unicorn{position:absolute;font-size:13px;opacity:0;transition:opacity 1.2s ease;
-    top:52px;right:23%;filter:brightness(1.6) saturate(.4)}
-  .unicorn.show{opacity:.85}
+  .scene svg{display:block;width:100%;height:100%}
+  .scene .cap{
+    position:absolute;left:12px;bottom:10px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--gold-bright);opacity:.9;
+    background:rgba(10,17,31,.55);padding:4px 9px;border-radius:6px}
+  .scene-fade{animation:sceneIn .7s ease}
+  @keyframes sceneIn{from{opacity:0}to{opacity:1}}
 
-  /* the climbing flame */
-  .flame{
-    position:absolute;left:8%;bottom:14px;width:16px;height:22px;
-    transition:left 1s ease,bottom 1s ease;
-    filter:drop-shadow(0 0 8px rgba(229,120,46,.8));
-  }
-  .flame::before{content:"";position:absolute;inset:0;
-    background:radial-gradient(ellipse at 50% 85%,var(--gold-bright) 0%,var(--ember) 45%,transparent 75%);
-    border-radius:50% 50% 50% 50%/62% 62% 38% 38%;
-    animation:flicker .5s ease-in-out infinite alternate}
-  .flame::after{content:"";position:absolute;left:4px;top:8px;width:8px;height:11px;
-    background:radial-gradient(ellipse at 50% 90%,#fff4d6 0%,var(--gold-bright) 60%,transparent 80%);
-    border-radius:50% 50% 50% 50%/62% 62% 38% 38%}
-  @keyframes flicker{from{transform:scaleY(1) rotate(-2deg)}to{transform:scaleY(1.12) rotate(2deg)}}
-  @keyframes twinkle{0%,100%{opacity:.25}50%{opacity:.85}}
+  .flamewrap{transition:transform 1.1s cubic-bezier(.4,0,.3,1)}
+  .flick{animation:flicker .55s ease-in-out infinite alternate;transform-origin:center 90%}
+  @keyframes flicker{from{transform:scaleY(1) rotate(-2deg)}to{transform:scaleY(1.1) rotate(2deg)}}
+
+  /* ---------- relic pouch HUD ---------- */
+  .hud{
+    width:100%;max-width:560px;flex:none;
+    display:none;align-items:center;gap:10px;
+    padding:8px 20px;background:#0a111f;border-bottom:1px solid rgba(212,160,56,.15)}
+  .hud.show{display:flex}
+  .hud .lbl{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-size:10px;letter-spacing:.2em;color:var(--mist);text-transform:uppercase}
+  .slot{width:34px;height:34px;border-radius:50%;border:1.5px dashed rgba(212,160,56,.4);
+    display:flex;align-items:center;justify-content:center;font-size:17px}
+  .slot.full{border-style:solid;border-color:var(--gold-bright);
+    background:radial-gradient(circle,#2a2410 0%,#1a2036 80%);
+    box-shadow:0 0 10px rgba(238,192,106,.35);animation:slotPop .45s ease}
+  @keyframes slotPop{0%{transform:scale(.4)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
 
   /* ---------- content column ---------- */
   .stage{width:100%;max-width:560px;padding:22px 20px 48px;flex:1}
@@ -69,14 +66,13 @@
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     font-size:11px;letter-spacing:.22em;color:var(--gold);
     text-transform:uppercase;margin-bottom:12px}
-  h1{font-size:clamp(26px,7vw,34px);line-height:1.15;font-weight:700;
+  h1{font-size:clamp(25px,6.5vw,33px);line-height:1.15;font-weight:700;
     text-wrap:balance;margin-bottom:14px}
   h1 .gold{color:var(--gold-bright)}
   .tale{font-size:17px;line-height:1.55;color:var(--mist);max-width:46ch;margin-bottom:22px}
   .tale strong{color:var(--parchment);font-weight:600}
   .tale em{color:var(--gold-bright);font-style:italic}
 
-  /* choices */
   .choices{display:flex;flex-direction:column;gap:10px}
   .choices.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   button.choice{
@@ -106,25 +102,40 @@
     border:none;font-family:inherit}
   .quiet:hover{color:var(--gold-bright)}
 
-  /* loot + reaction */
+  /* reaction + verdict stamp */
   .reaction{
-    border-left:3px solid var(--gold);background:var(--night-2);
+    position:relative;border-left:3px solid var(--gold);background:var(--night-2);
     border-radius:0 10px 10px 0;padding:14px 16px;font-size:16.5px;line-height:1.5;
     margin-bottom:18px}
-  .reaction .verdict{display:block;margin-top:10px;color:var(--gold-bright);
+  .stamp{
+    display:inline-block;margin-top:12px;
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    font-size:12px;letter-spacing:.2em;font-weight:700}
+    font-size:15px;letter-spacing:.24em;font-weight:800;color:var(--gold-bright);
+    border:2.5px solid var(--gold-bright);border-radius:6px;padding:5px 12px 5px 14px;
+    transform:rotate(-6deg);
+    box-shadow:0 0 14px rgba(238,192,106,.25);
+    animation:stampIn .45s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes stampIn{0%{transform:rotate(-20deg) scale(2.6);opacity:0}
+    60%{transform:rotate(-6deg) scale(.94);opacity:1}100%{transform:rotate(-6deg) scale(1)}}
+
+  /* loot + sparkles */
   .loot{
-    display:flex;align-items:center;gap:14px;margin:0 0 22px;
+    position:relative;display:flex;align-items:center;gap:14px;margin:0 0 22px;
     background:linear-gradient(135deg,#1d2846,#16203a);
     border:1px solid var(--gold);border-radius:12px;padding:14px 16px;
-    animation:lootIn .5s ease}
+    animation:lootIn .5s cubic-bezier(.2,1.4,.4,1)}
   .loot .icon{font-size:30px;filter:drop-shadow(0 0 10px rgba(238,192,106,.5))}
   .loot .name{font-weight:700;color:var(--gold-bright)}
   .loot .why{font-size:13.5px;color:var(--mist)}
   .loot .label{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     font-size:10px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase}
-  @keyframes lootIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes lootIn{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+  .spark{position:absolute;left:26px;top:50%;width:6px;height:6px;border-radius:50%;
+    background:var(--gold-bright);pointer-events:none;opacity:0;
+    animation:sparkFly .8s ease-out forwards}
+  @keyframes sparkFly{
+    0%{transform:translate(0,0) scale(1);opacity:1}
+    100%{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
 
   /* ceremony */
   .relics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 6px}
@@ -136,7 +147,6 @@
   .guildline b{color:var(--parchment)}
   .unicaption{font-size:13px;color:var(--mist);font-style:italic;margin:10px 0 20px}
 
-  /* banner preview */
   .banner{
     background:linear-gradient(135deg,#3a2c0d,#57431a);
     border:1px solid var(--gold-bright);border-radius:12px;
@@ -144,7 +154,6 @@
     box-shadow:0 4px 24px rgba(212,160,56,.25);margin-bottom:20px}
   .note{font-size:13px;color:var(--mist);font-style:italic;margin-top:18px;line-height:1.5}
 
-  /* scroll form */
   .scroll-form{display:flex;flex-direction:column;gap:10px;margin-top:18px}
   .scroll-form input,.scroll-form textarea{
     font-family:inherit;font-size:16px;color:var(--parchment);
@@ -163,23 +172,17 @@
   }
   @media (max-width:420px){
     .choices.grid{grid-template-columns:1fr}
+    .scene{height:186px}
   }
 </style>
 
-<div class="scene" aria-hidden="true">
-  <div class="moon"></div>
-  <div class="star" style="top:22px;left:12%"></div>
-  <div class="star" style="top:48px;left:31%;animation-delay:.8s"></div>
-  <div class="star" style="top:16px;left:55%;animation-delay:1.6s"></div>
-  <div class="star" style="top:58px;left:72%;animation-delay:.4s"></div>
-  <div class="star" style="top:34px;left:88%;animation-delay:2.2s"></div>
-  <div class="star" style="top:74px;left:47%;animation-delay:1.1s"></div>
-  <div class="peak far"></div>
-  <div class="peak near"></div>
-  <div class="unicorn" id="unicorn">🦄</div>
-  <div class="flame" id="flame"></div>
+<div class="scene" id="scene" aria-hidden="true"></div>
+<div class="hud" id="hud">
+  <span class="lbl">🎒 Relic pouch</span>
+  <span class="slot" id="slot0"></span>
+  <span class="slot" id="slot1"></span>
+  <span class="slot" id="slot2"></span>
 </div>
-
 <main class="stage" id="stage" aria-live="polite"></main>
 
 <script>
@@ -188,18 +191,270 @@
 
   var SITE = "https://kindlingadvisory.com";
   var stage = document.getElementById("stage");
-  var flame = document.getElementById("flame");
-  var unicorn = document.getElementById("unicorn");
+  var sceneEl = document.getElementById("scene");
+  var hud = document.getElementById("hud");
 
-  /* flame waypoints up the mountain: [left%, bottom px] for steps 0..8 */
-  var PATH = [[8,14],[16,26],[24,40],[33,58],[41,72],[49,92],[55,110],[60,126],[64,142]];
-  function climb(step){
-    var p = PATH[Math.min(step, PATH.length-1)];
-    flame.style.left = p[0] + "%";
-    flame.style.bottom = p[1] + "px";
+  /* ================= SCENE ART =================
+     Flat geometric SVG scenes, 560x210 viewBox. */
+
+  var SKY = '<defs>' +
+    '<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="#080e1b"/><stop offset=".6" stop-color="#0d1526"/>' +
+      '<stop offset="1" stop-color="#15233f"/></linearGradient>' +
+    '<radialGradient id="glow" cx=".5" cy=".5" r=".5">' +
+      '<stop offset="0" stop-color="#eec06a" stop-opacity=".5"/>' +
+      '<stop offset="1" stop-color="#eec06a" stop-opacity="0"/></radialGradient>' +
+    '<radialGradient id="warm" cx=".5" cy=".55" r=".65">' +
+      '<stop offset="0" stop-color="#3a2a12"/><stop offset="1" stop-color="#120f14"/></radialGradient>' +
+    '</defs>';
+
+  function stars(){
+    var s = "", pts = [[40,26],[95,52],[170,20],[240,44],[330,18],[420,38],[500,24],[535,58],[285,60]];
+    pts.forEach(function(p){ s += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="1.4" fill="#cfd8ee" opacity=".7"/>'; });
+    return s;
+  }
+  function moon(){
+    return '<circle cx="500" cy="42" r="17" fill="#efe6d0"/>' +
+           '<circle cx="494" cy="38" r="4" fill="#d8cfb8" opacity=".7"/>' +
+           '<circle cx="505" cy="48" r="3" fill="#d8cfb8" opacity=".6"/>' +
+           '<circle cx="500" cy="42" r="26" fill="url(#glow)" opacity=".4"/>';
+  }
+  function flameSVG(x, y, scale){
+    return '<g class="flamewrap" id="flameg" style="transform:translate('+x+'px,'+y+'px) scale('+(scale||1)+')">' +
+      '<circle cx="0" cy="-8" r="17" fill="url(#glow)"/>' +
+      '<g class="flick">' +
+        '<path d="M0,-19 C5,-13 8,-9 8,-4 C8,1 4,4 0,4 C-4,4 -8,1 -8,-4 C-8,-9 -5,-13 0,-19Z" fill="#e5782e"/>' +
+        '<path d="M0,-11 C2.6,-7.5 4,-5.5 4,-2.6 C4,.4 2,1.8 0,1.8 C-2,1.8 -4,.4 -4,-2.6 C-4,-5.5 -2.6,-7.5 0,-11Z" fill="#f6e3ac"/>' +
+      '</g></g>';
   }
 
-  var hero = { guild:null, guildName:"", treasure:null, quest:null, realm:null };
+  /* the trail: flame waypoints climbing toward the summit at (398,52) */
+  var TRAIL_PTS = [[56,196],[140,184],[224,168],[170,146],[262,122],[344,104],[300,82],[372,64]];
+  var TRAIL_CAPS = ["The trailhead","The lower slopes","The winding path","Halfway camp",
+                    "The high ridge","Above the clouds","The final ascent","Beneath the summit"];
+
+  function trailScene(step){
+    var pathD = "M56,200 L140,188 L224,172 L170,150 L262,126 L344,108 L300,86 L372,68 L398,56";
+    var s = '<svg viewBox="0 0 560 210" preserveAspectRatio="xMidYMax slice">' + SKY +
+      '<rect width="560" height="210" fill="url(#sky)"/>' + stars() + moon() +
+      /* far ridges */
+      '<polygon points="0,210 0,140 60,104 130,148 190,116 250,152 310,130 340,150 340,210" fill="#141f38"/>' +
+      '<polygon points="300,210 360,148 420,178 480,140 560,182 560,210" fill="#141f38"/>' +
+      /* main mountain */
+      '<polygon points="240,210 398,52 540,210" fill="#1b2946"/>' +
+      '<polygon points="380,78 398,52 416,78 408,72 398,80 388,72" fill="#e8e2d2"/>' +
+      /* trail */
+      '<path d="' + pathD + '" fill="none" stroke="#d4a038" stroke-width="2" stroke-dasharray="1 8" stroke-linecap="round" opacity=".55"/>';
+    /* waypoint markers already passed */
+    for (var i = 0; i <= Math.min(step, TRAIL_PTS.length-1); i++){
+      s += '<circle cx="'+TRAIL_PTS[i][0]+'" cy="'+(TRAIL_PTS[i][1]+4)+'" r="2.4" fill="#eec06a" opacity=".8"/>';
+    }
+    var p = TRAIL_PTS[Math.min(step, TRAIL_PTS.length-1)];
+    s += flameSVG(p[0], p[1], 1) + '</svg>';
+    return { svg:s, cap:TRAIL_CAPS[Math.min(step, TRAIL_CAPS.length-1)] };
+  }
+
+  function tavernScene(){
+    var s = '<svg viewBox="0 0 560 210" preserveAspectRatio="xMidYMax slice">' + SKY +
+      '<rect width="560" height="210" fill="url(#warm)"/>' +
+      /* beams */
+      '<rect x="0" y="0" width="560" height="14" fill="#241a10"/>' +
+      '<rect x="70" y="0" width="16" height="210" fill="#241a10"/>' +
+      '<rect x="474" y="0" width="16" height="210" fill="#241a10"/>' +
+      /* hanging sign */
+      '<line x1="150" y1="14" x2="150" y2="40" stroke="#6b5232" stroke-width="3"/>' +
+      '<line x1="230" y1="14" x2="230" y2="40" stroke="#6b5232" stroke-width="3"/>' +
+      '<rect x="126" y="40" width="128" height="42" rx="6" fill="#3a2c17" stroke="#d4a038" stroke-width="1.5"/>' +
+      '<text x="190" y="58" text-anchor="middle" font-size="12" fill="#eec06a" font-style="italic">Ye Tavern of</text>' +
+      '<text x="190" y="74" text-anchor="middle" font-size="12" fill="#eec06a" font-style="italic">the Unconvinced</text>' +
+      /* lantern */
+      '<line x1="420" y1="14" x2="420" y2="46" stroke="#6b5232" stroke-width="3"/>' +
+      '<rect x="410" y="46" width="20" height="26" rx="4" fill="#241a10" stroke="#d4a038"/>' +
+      '<circle cx="420" cy="59" r="7" fill="#f6c85f"/>' +
+      '<circle cx="420" cy="59" r="22" fill="url(#glow)"/>' +
+      /* bar counter */
+      '<rect x="0" y="150" width="560" height="60" fill="#2c1f10"/>' +
+      '<rect x="0" y="142" width="560" height="12" rx="4" fill="#4a3419"/>' +
+      /* innkeeper silhouette behind counter */
+      '<circle cx="330" cy="112" r="17" fill="#1a1410"/>' +
+      '<path d="M300,152 C303,128 357,128 360,152 Z" fill="#1a1410"/>' +
+      '<rect x="316" y="98" width="28" height="7" rx="3" fill="#1a1410"/>' +
+      /* skeptical eyebrow */
+      '<line x1="322" y1="108" x2="331" y2="105" stroke="#d4a038" stroke-width="2" stroke-linecap="round"/>' +
+      /* tankards */
+      '<rect x="120" y="118" width="24" height="28" rx="4" fill="#7a5a2b"/>' +
+      '<rect x="144" y="126" width="7" height="12" rx="3" fill="none" stroke="#7a5a2b" stroke-width="3"/>' +
+      '<ellipse cx="132" cy="116" rx="12" ry="5" fill="#f2ead2"/>' +
+      '<rect x="210" y="122" width="22" height="24" rx="4" fill="#7a5a2b"/>' +
+      '<ellipse cx="221" cy="120" rx="11" ry="4.5" fill="#f2ead2"/>' +
+      /* the hero's blade on the counter */
+      '<g transform="rotate(-8 450 138)"><rect x="416" y="134" width="66" height="5" rx="2.5" fill="#c7ccd8"/>' +
+      '<rect x="478" y="128" width="6" height="17" rx="2" fill="#d4a038"/>' +
+      '<rect x="484" y="132" width="16" height="8" rx="3" fill="#6b5232"/></g>' +
+      '</svg>';
+    return { svg:s, cap:"Trial I — the Tavern of the Unconvinced" };
+  }
+
+  function dragonScene(){
+    var s = '<svg viewBox="0 0 560 210" preserveAspectRatio="xMidYMax slice">' + SKY +
+      '<rect width="560" height="210" fill="#0e0a14"/>' +
+      /* cave walls */
+      '<polygon points="0,0 90,0 34,210 0,210" fill="#161022"/>' +
+      '<polygon points="560,0 470,0 530,210 560,210" fill="#161022"/>' +
+      /* gold hoard */
+      '<ellipse cx="300" cy="206" rx="240" ry="42" fill="#7a5a1c"/>' +
+      '<ellipse cx="300" cy="196" rx="205" ry="36" fill="#a37c26"/>' +
+      '<ellipse cx="300" cy="186" rx="165" ry="30" fill="#d4a038"/>' +
+      '<circle cx="180" cy="182" r="6" fill="#eec06a"/><circle cx="235" cy="192" r="5" fill="#eec06a"/>' +
+      '<circle cx="390" cy="186" r="6" fill="#eec06a"/><circle cx="330" cy="196" r="5" fill="#eec06a"/>' +
+      '<circle cx="430" cy="194" r="5" fill="#eec06a"/>' +
+      /* dragon body coiled on hoard */
+      '<path d="M170,178 C180,140 250,128 310,140 C370,152 420,148 432,170 C400,182 210,186 170,178Z" fill="#2e5340"/>' +
+      /* tail */
+      '<path d="M418,166 C470,160 486,140 500,118 L488,140 C480,154 460,166 436,172Z" fill="#2e5340"/>' +
+      '<polygon points="500,118 512,104 506,124" fill="#2e5340"/>' +
+      /* neck + head */
+      '<path d="M232,150 C218,118 224,92 250,74 C258,68 270,66 278,70 C270,84 262,110 268,146Z" fill="#2e5340"/>' +
+      '<path d="M244,78 C238,64 246,52 264,50 C286,48 300,58 298,68 C296,76 284,80 272,78 C262,90 250,88 244,78Z" fill="#3a6650"/>' +
+      /* horns, eye, nostril smoke */
+      '<polygon points="252,52 246,36 260,48" fill="#e8e2d2"/>' +
+      '<polygon points="268,50 268,34 278,48" fill="#e8e2d2"/>' +
+      '<circle cx="278" cy="62" r="3.6" fill="#eec06a"/>' +
+      '<circle cx="279.5" cy="62" r="1.6" fill="#0e0a14"/>' +
+      '<circle cx="304" cy="56" r="4" fill="#8a97b8" opacity=".5"/>' +
+      '<circle cx="312" cy="46" r="6" fill="#8a97b8" opacity=".35"/>' +
+      '<circle cx="322" cy="33" r="8" fill="#8a97b8" opacity=".22"/>' +
+      /* wing */
+      '<path d="M310,140 C330,100 380,88 412,92 C384,104 360,124 352,148Z" fill="#25452f"/>' +
+      /* THE GILET — puffer vest on the chest */
+      '<g>' +
+      '<path d="M240,124 C238,102 258,96 272,100 C286,96 306,102 304,124 C303,138 290,148 272,148 C254,148 241,138 240,124Z" fill="#1d3557"/>' +
+      '<line x1="248" y1="112" x2="296" y2="112" stroke="#12233c" stroke-width="2.5"/>' +
+      '<line x1="246" y1="124" x2="298" y2="124" stroke="#12233c" stroke-width="2.5"/>' +
+      '<line x1="250" y1="136" x2="294" y2="136" stroke="#12233c" stroke-width="2.5"/>' +
+      '<line x1="272" y1="100" x2="272" y2="148" stroke="#12233c" stroke-width="2"/>' +
+      '<rect x="276" y="104" width="14" height="9" rx="2" fill="#e8e2d2"/>' +
+      '</g>' +
+      '<text x="280" y="30" text-anchor="middle" font-size="11.5" fill="#8a97b8" font-style="italic">Vesticus the Diligent — note the gilet</text>' +
+      '</svg>';
+    return { svg:s, cap:"Trial II — the Dragon's Hoard" };
+  }
+
+  function campScene(){
+    var s = '<svg viewBox="0 0 560 210" preserveAspectRatio="xMidYMax slice">' + SKY +
+      '<rect width="560" height="210" fill="url(#sky)"/>' + stars() + moon() +
+      /* summit close now */
+      '<polygon points="330,210 452,34 560,210" fill="#1b2946"/>' +
+      '<polygon points="436,60 452,34 468,60 460,55 452,62 444,55" fill="#e8e2d2"/>' +
+      '<polygon points="0,210 0,150 70,118 150,160 220,134 300,178 300,210" fill="#141f38"/>' +
+      /* ground */
+      '<ellipse cx="200" cy="216" rx="260" ry="34" fill="#101a2e"/>' +
+      /* campfire */
+      '<rect x="176" y="176" width="52" height="7" rx="3.5" fill="#4a3419" transform="rotate(14 202 180)"/>' +
+      '<rect x="178" y="178" width="52" height="7" rx="3.5" fill="#3a2a14" transform="rotate(-12 204 182)"/>' +
+      '<circle cx="203" cy="164" r="26" fill="url(#glow)"/>' +
+      '<g class="flick" style="transform-origin:203px 176px">' +
+      '<path d="M203,142 C212,152 217,160 217,168 C217,176 210,180 203,180 C196,180 189,176 189,168 C189,160 194,152 203,142Z" fill="#e5782e"/>' +
+      '<path d="M203,156 C207.5,161 210,165 210,170 C210,175 206.5,177 203,177 C199.5,177 196,175 196,170 C196,165 198.5,161 203,156Z" fill="#f6e3ac"/>' +
+      '</g>' +
+      /* Bardrick: head, body, lute */
+      '<circle cx="112" cy="146" r="12" fill="#1a2036"/>' +
+      '<path d="M92,186 C94,162 130,162 132,186 Z" fill="#1a2036"/>' +
+      '<ellipse cx="134" cy="172" rx="13" ry="9" fill="#7a5a2b" transform="rotate(-30 134 172)"/>' +
+      '<rect x="140" y="150" width="4" height="20" rx="2" fill="#7a5a2b" transform="rotate(-30 142 160)"/>' +
+      '<circle cx="112" cy="139" r="12" fill="none"/>' +
+      '<path d="M100,144 L124,144 L118,132 L106,132 Z" fill="#25314f"/>' +
+      /* feather in cap */
+      '<line x1="119" y1="131" x2="126" y2="120" stroke="#d4a038" stroke-width="2" stroke-linecap="round"/>' +
+      /* Sylra: head, body, bow */
+      '<circle cx="290" cy="142" r="11" fill="#1a2036"/>' +
+      '<path d="M272,182 C274,158 306,158 308,182 Z" fill="#1a2036"/>' +
+      '<path d="M312,128 C324,142 324,162 312,176" fill="none" stroke="#7a5a2b" stroke-width="3" stroke-linecap="round"/>' +
+      '<line x1="312" y1="128" x2="312" y2="176" stroke="#c7ccd8" stroke-width="1.4"/>' +
+      /* Grumli: squat, helmet, hammer */
+      '<circle cx="380" cy="152" r="12" fill="#1a2036"/>' +
+      '<path d="M358,186 C360,166 400,166 402,186 Z" fill="#1a2036"/>' +
+      '<path d="M368,150 L392,150 L392,142 C392,134 368,134 368,142 Z" fill="#25314f"/>' +
+      '<path d="M370,166 C374,160 386,160 390,166" fill="none" stroke="#8a5a2b" stroke-width="4" stroke-linecap="round"/>' +
+      '<rect x="404" y="150" width="7" height="26" rx="3" fill="#6b5232"/>' +
+      '<rect x="396" y="142" width="23" height="11" rx="3" fill="#8a97b8"/>' +
+      '</svg>';
+    return { svg:s, cap:"Trial III — the final camp" };
+  }
+
+  function summitScene(){
+    var s = '<svg viewBox="0 0 560 210" preserveAspectRatio="xMidYMax slice">' + SKY +
+      '<rect width="560" height="210" fill="url(#sky)"/>' + stars() + moon() +
+      /* clouds below the summit */
+      '<ellipse cx="80" cy="196" rx="110" ry="22" fill="#26324e" opacity=".8"/>' +
+      '<ellipse cx="300" cy="206" rx="150" ry="26" fill="#26324e" opacity=".7"/>' +
+      '<ellipse cx="500" cy="198" rx="100" ry="20" fill="#26324e" opacity=".8"/>' +
+      /* distant peak with unicorn */
+      '<polygon points="380,210 470,86 560,210" fill="#141f38"/>' +
+      '<polygon points="458,104 470,86 482,104 476,99 470,106 464,99" fill="#5a6784"/>' +
+      '<text x="470" y="82" text-anchor="middle" font-size="13">🦄</text>' +
+      /* summit foreground */
+      '<polygon points="0,210 190,64 400,210" fill="#1b2946"/>' +
+      '<polygon points="158,110 190,64 224,110 208,100 190,114 172,100" fill="#e8e2d2"/>' +
+      /* planted banner */
+      '<line x1="238" y1="150" x2="238" y2="92" stroke="#6b5232" stroke-width="4" stroke-linecap="round"/>' +
+      '<path d="M240,94 L288,102 L240,116 Z" fill="#d4a038"/>' +
+      /* big flame on the summit ridge */
+      '<circle cx="190" cy="106" r="30" fill="url(#glow)"/>' +
+      '<g class="flick" style="transform-origin:190px 122px">' +
+      '<path d="M190,84 C199,95 204,103 204,112 C204,121 197,126 190,126 C183,126 176,121 176,112 C176,103 181,95 190,84Z" fill="#e5782e"/>' +
+      '<path d="M190,99 C194.5,105 197,109 197,114 C197,119 193.5,121 190,121 C186.5,121 183,119 183,114 C183,109 185.5,105 190,99Z" fill="#f6e3ac"/>' +
+      '</g>' +
+      '</svg>';
+    return { svg:s, cap:"The summit 🏔" };
+  }
+
+  function gateScene(){
+    var s = '<svg viewBox="0 0 560 210" preserveAspectRatio="xMidYMax slice">' + SKY +
+      '<rect width="560" height="210" fill="url(#sky)"/>' + stars() + moon() +
+      /* rock face */
+      '<polygon points="0,210 0,60 120,20 300,58 470,16 560,70 560,210" fill="#1b2946"/>' +
+      /* the great door */
+      '<path d="M212,210 L212,112 C212,74 348,74 348,112 L348,210 Z" fill="#2c1f10" stroke="#d4a038" stroke-width="2.5"/>' +
+      '<line x1="280" y1="82" x2="280" y2="210" stroke="#1a1208" stroke-width="3"/>' +
+      '<circle cx="264" cy="150" r="5" fill="#d4a038"/><circle cx="296" cy="150" r="5" fill="#d4a038"/>' +
+      /* torches */
+      '<rect x="178" y="120" width="7" height="30" rx="3" fill="#4a3419"/>' +
+      '<circle cx="181" cy="112" r="14" fill="url(#glow)"/>' +
+      '<g class="flick" style="transform-origin:181px 120px"><path d="M181,102 C185,107 187,110 187,114 C187,118 184,120 181,120 C178,120 175,118 175,114 C175,110 177,107 181,102Z" fill="#e5782e"/></g>' +
+      '<rect x="374" y="120" width="7" height="30" rx="3" fill="#4a3419"/>' +
+      '<circle cx="377" cy="112" r="14" fill="url(#glow)"/>' +
+      '<g class="flick" style="transform-origin:377px 120px"><path d="M377,102 C381,107 383,110 383,114 C383,118 380,120 377,120 C374,120 371,118 371,114 C371,110 373,107 377,102Z" fill="#e5782e"/></g>' +
+      '</svg>';
+    return { svg:s, cap:"The gate of Kindling" };
+  }
+
+  var currentScene = "";
+  function setScene(name, step){
+    var made;
+    if (name === "trail") made = trailScene(step||0);
+    else if (name === "tavern") made = tavernScene();
+    else if (name === "dragon") made = dragonScene();
+    else if (name === "camp")   made = campScene();
+    else if (name === "summit") made = summitScene();
+    else made = gateScene();
+
+    if (name === "trail" && currentScene === "trail"){
+      /* glide the flame along the path instead of redrawing */
+      var g = document.getElementById("flameg");
+      var p = TRAIL_PTS[Math.min(step, TRAIL_PTS.length-1)];
+      if (g){ g.style.transform = "translate("+p[0]+"px,"+p[1]+"px) scale(1)";
+        sceneEl.querySelector(".cap").textContent = made.cap;
+        return; }
+    }
+    currentScene = name;
+    sceneEl.innerHTML = '<div class="scene-fade">' + made.svg + '</div>' +
+                        '<span class="cap">' + made.cap + '</span>';
+  }
+
+  /* ================= GAME STATE ================= */
+  var hero = { guild:null, guildName:"", deeptech:false, treasure:null, quest:null, realm:null };
+  var relicsWon = 0;
 
   function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
   function show(html){
@@ -207,11 +462,20 @@
     window.scrollTo({top:0, behavior:"smooth"});
   }
   function on(id, fn){ document.getElementById(id).addEventListener("click", fn); }
+  function updateHUD(){
+    var icons = ["🪙","💎","🚩"];
+    for (var i=0;i<3;i++){
+      var slot = document.getElementById("slot"+i);
+      if (i < relicsWon){ slot.textContent = icons[i]; slot.classList.add("full"); }
+      else { slot.textContent = ""; slot.classList.remove("full"); }
+    }
+  }
 
-  /* ============ INTRO ============ */
+  /* ================= INTRO ================= */
   function intro(){
-    climb(0); unicorn.classList.remove("show");
-    hero = { guild:null, guildName:"", treasure:null, quest:null, realm:null };
+    hero = { guild:null, guildName:"", deeptech:false, treasure:null, quest:null, realm:null };
+    relicsWon = 0; hud.classList.remove("show"); updateHUD();
+    setScene("trail", 0);
     show(
       '<p class="eyebrow">The Gate of Kindling</p>' +
       '<h1>Beyond this mountain lies the land of <span class="gold">Kindling</span>.</h1>' +
@@ -222,9 +486,9 @@
     on("begin", q1);
   }
 
-  /* ============ THE FORGE (4 questions) ============ */
+  /* ================= THE FORGE ================= */
   function forgeScreen(step, title, sub, opts, grid, pick){
-    climb(step);
+    setScene("trail", step);
     var html =
       '<p class="eyebrow">Forge thy company — ' + step + ' of 4</p>' +
       '<h1>' + title + '</h1>' +
@@ -250,12 +514,12 @@
         {t:"🪙 Fintech Forgemasters", d:"Masters of the money magic", v:"pass", n:"the Fintech Forgemasters"},
         {t:"🛡️ Consultancy Knights", d:"Wisdom for hire, armour included", v:"pass", n:"the Consultancy Knights"},
         {t:"⚖️ B2B Merchants", d:"Selling to kingdoms, not peasants", v:"pass", n:"the B2B Merchants"},
-        {t:"🔬 Deeptech Alchemists", d:"Years in the lab, world-changing brews", v:"pass", n:"the Deeptech Alchemists"},
+        {t:"🔬 Deeptech Alchemists", d:"Years in the lab, world-changing brews", v:"pass", n:"the Deeptech Alchemists", deep:true},
         {t:"🍺 Tavern Keepers", d:"Feeding and delighting the common folk", v:"sector", n:"the Tavern Keepers"},
         {t:"🏪 Merchants of the Bazaar", d:"Wares for the wandering crowd", v:"sector", n:"the Merchants of the Bazaar"}
       ],
       true,
-      function(o){ hero.guild = o.v; hero.guildName = o.n; q2(); });
+      function(o){ hero.guild = o.v; hero.guildName = o.n; hero.deeptech = !!o.deep; q2(); });
   }
 
   function q2(){
@@ -277,9 +541,9 @@
     forgeScreen(3, "What quest calls thee?",
       "Why dost thou seek the land of Kindling?",
       [
-        {t:"💰 Raise gold from the dragons", d:"Funding for the war ahead", v:"pass"},
-        {t:"🛡️ Assemble a legion of sales legends", d:"Build the machine that conquers", v:"pass"},
-        {t:"🔥 Both — gold AND legions", d:"The full campaign", v:"pass"},
+        {t:"💰 Raise gold from the dragons", d:"Funding for the war ahead", v:"raise"},
+        {t:"🛡️ Assemble a legion of sales legends", d:"Build the machine that conquers", v:"legion"},
+        {t:"🔥 Both — gold AND legions", d:"The full campaign", v:"both"},
         {t:"🌫️ Merely wandering these lands", d:"Curiosity, no quest as yet", v:"wander"}
       ],
       false,
@@ -299,20 +563,37 @@
       function(o){ hero.realm = o.v; verdict(); });
   }
 
-  /* ============ THE VERDICT ============ */
+  /* ================= THE VERDICT ================= */
   function verdict(){
     if (hero.guild === "sector")   return failScreen("sector");
     if (hero.treasure === "early") return failScreen("early");
-    if (hero.treasure === "late")  return failScreen("late");
+    /* the deeptech exception: a big war chest raised to forge the
+       brew, but still no army — the one late-stage company Kindling
+       will climb with */
+    if (hero.treasure === "late" && !(hero.deeptech && hero.quest !== "wander"))
+      return failScreen("late");
     if (hero.realm === "realm")    return failScreen("realm");
     if (hero.quest === "wander")   return failScreen("wander");
-    trial(0);
+    accepted();
   }
 
-  /* ============ THE THREE TRIALS ============ */
+  function accepted(){
+    setScene("trail", 4);
+    hud.classList.add("show"); updateHUD();
+    show(
+      '<p class="eyebrow">The forge is complete</p>' +
+      '<h1>⚡ The mountain <span class="gold">accepts thee</span>.</h1>' +
+      '<p class="tale">Champion of <strong>' + esc(hero.guildName) + '</strong> — thy scroll is read, thy banner recognised. But none may enter the land of Kindling untested.</p>' +
+      '<p class="tale"><em>Three trials stand between thee and the summit.</em></p>' +
+      '<button class="btn" id="go">⚔️ Face the first trial</button>'
+    );
+    on("go", function(){ trial(0); });
+  }
+
+  /* ================= THE THREE TRIALS ================= */
   var TRIALS = [
     {
-      name:"The Tavern of the Unconvinced",
+      name:"The Tavern of the Unconvinced", scene:"tavern",
       setup:'A weathered innkeeper eyes thy wares. <strong>"Another founder,"</strong> she mutters. <strong>"The last one promised me a \'revolutionary platform\'. It set fire to my cellar."</strong> How dost thou win her gold?',
       choices:[
         {t:"🗡 Let her hold the blade", d:"Offer a free trial",
@@ -322,10 +603,11 @@
         {t:"📜 Unroll the scroll of testimonials", d:'"The blacksmith in the next village swears by it"',
          r:'<strong>"Borin said THAT? Borin hates everything."</strong> She squints at the scroll… and reaches for her coin purse.', v:"SOLD"}
       ],
-      loot:{icon:"🪙", name:"The First Coin", why:"Proof the world will pay."}
+      loot:{icon:"🪙", name:"The First Coin", why:"Proof the world will pay."},
+      afterStep:5
     },
     {
-      name:"The Dragon's Hoard",
+      name:"The Dragon's Hoard", scene:"dragon",
       setup:'In a cavern of gold coils <strong>Vesticus the Diligent</strong>, a dragon of considerable due diligence. Smoke rises. <strong>"Thou hast TEN WORDS,"</strong> he rumbles, <strong>"before I lose interest. I am very busy and very important."</strong>',
       choices:[
         {t:'🔥 "Swords-as-a-Service. Recurring revenue."', d:'"The village NEEDS this."',
@@ -335,10 +617,11 @@
         {t:'🤝 "Thy rival dragon already offered me gold."', d:"The oldest move in the cavern",
          r:'<strong>"The oldest spell in the book,"</strong> he growls. <strong>"And yet it works on me EVERY time. TAKE THE GOLD."</strong>', v:"FUNDED"}
       ],
-      loot:{icon:"💎", name:"The Dragon's Favor", why:"Capital, on surprisingly reasonable terms."}
+      loot:{icon:"💎", name:"The Dragon's Favor", why:"Capital, on surprisingly reasonable terms."},
+      afterStep:6
     },
     {
-      name:"Assemble the Fellowship",
+      name:"Assemble the Fellowship", scene:"camp",
       setup:'At the final camp, three legends sit by the fire. <strong>Only one may join thy climb to the summit.</strong>',
       choices:[
         {t:"🎻 Bardrick the Smooth", d:"Once talked a troll into a three-year contract. Auto-renewing.",
@@ -348,15 +631,16 @@
         {t:"⚒️ Grumli Follow-Up, son of Circle-Back", d:"Has never once let a lead go cold. NEVER.",
          r:'Grumli grips thy shoulder. <strong>"I will check in,"</strong> he vows. <strong>"Just gently bumping this to the top of thine inbox."</strong>', v:"RECRUITED"}
       ],
-      loot:{icon:"🚩", name:"The Fellowship Banner", why:"No founder summits alone."}
+      loot:{icon:"🚩", name:"The Fellowship Banner", why:"No founder summits alone."},
+      afterStep:7
     }
   ];
 
   function trial(i){
-    climb(5 + i);
     var t = TRIALS[i];
+    setScene(t.scene);
     var html =
-      '<p class="eyebrow">Trial ' + (i+1) + ' of 3 — ' + t.name + '</p>' +
+      '<p class="eyebrow">Trial ' + (i+1) + ' of 3</p>' +
       '<h1>' + t.name + '</h1>' +
       '<p class="tale">' + t.setup + '</p>' +
       '<div class="choices">';
@@ -371,25 +655,40 @@
     });
   }
 
+  function sparks(host){
+    for (var k=0;k<7;k++){
+      var s = document.createElement("span");
+      s.className = "spark";
+      var ang = (Math.PI*2/7)*k, dist = 34 + Math.random()*26;
+      s.style.setProperty("--dx", Math.cos(ang)*dist + "px");
+      s.style.setProperty("--dy", Math.sin(ang)*dist - 10 + "px");
+      s.style.animationDelay = (Math.random()*.15) + "s";
+      host.appendChild(s);
+    }
+  }
+
   function trialResult(i, j){
     var t = TRIALS[i], c = t.choices[j];
     var last = (i === TRIALS.length - 1);
+    /* the world moves on: back to the mountain, higher than before */
+    setScene("trail", t.afterStep);
     show(
       '<p class="eyebrow">Trial ' + (i+1) + ' of 3 — ' + t.name + '</p>' +
-      '<div class="reaction">' + c.r + '<span class="verdict">⚔ ' + c.v + '</span></div>' +
-      '<div class="loot"><span class="icon">' + t.loot.icon + '</span><span>' +
+      '<div class="reaction">' + c.r + '<br><span class="stamp">⚔ ' + c.v + '</span></div>' +
+      '<div class="loot" id="lootbox"><span class="icon">' + t.loot.icon + '</span><span>' +
         '<span class="label">Relic looted</span><br>' +
         '<span class="name">' + t.loot.name + '</span><br>' +
         '<span class="why">' + t.loot.why + '</span></span></div>' +
       '<button class="btn" id="next">' + (last ? "🏔 The summit awaits" : "⛰ Climb on") + '</button>'
     );
+    relicsWon = i + 1; updateHUD();
+    sparks(document.getElementById("lootbox"));
     on("next", function(){ last ? ceremony() : trial(i+1); });
   }
 
-  /* ============ THE SUMMIT CEREMONY ============ */
+  /* ================= THE SUMMIT ================= */
   function ceremony(){
-    climb(8);
-    unicorn.classList.add("show");
+    setScene("summit");
     var html =
       '<p class="eyebrow">The Summit</p>' +
       '<h1>Congratulations, <span class="gold">adventurer</span>.</h1>' +
@@ -408,6 +707,8 @@
   }
 
   function gates(){
+    setScene("gate");
+    hud.classList.remove("show");
     show(
       '<p class="eyebrow">The gates open</p>' +
       '<div class="banner">⚔️ <strong>Victorious adventurer</strong> — thou art exactly our kind of legend in the land of Kindling. Browse the armoury, and reach out when thou art ready for the fight. 💪🗡</div>' +
@@ -418,7 +719,7 @@
     on("again", intro);
   }
 
-  /* ============ THE KIND REJECTIONS ============ */
+  /* ================= THE KIND REJECTIONS ================= */
   var FAILS = {
     early:{
       icon:"🌱", title:"Every legend begins with a first coin.",
@@ -449,6 +750,7 @@
 
   function failScreen(kind){
     var f = FAILS[kind];
+    setScene("gate");
     show(
       '<p class="eyebrow">The gatekeeper speaks</p>' +
       '<h1>' + f.icon + ' ' + f.title + '</h1>' +
