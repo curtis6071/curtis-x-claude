@@ -114,6 +114,10 @@
   button.choice:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
   .choice .t{display:block;font-weight:700}
   .choice .d{display:block;font-size:13.5px;color:var(--mist);margin-top:3px}
+  .choice.wide{grid-column:1/-1}
+  .choice.sel{border-color:var(--gold-bright);background:#1d2a4a;
+    box-shadow:inset 0 0 0 1px var(--gold-bright)}
+  .choice.sel .t::after{content:" ✓";color:var(--gold-bright)}
 
   .btn{
     display:inline-block;font-family:inherit;cursor:pointer;text-decoration:none;
@@ -286,7 +290,7 @@
   };
 
   /* ================= GAME STATE ================= */
-  var hero = { guild:null, guildName:"", deeptech:false, treasure:null, quest:null, realm:null };
+  var hero = { guild:null, guildName:"", deeptech:false, treasures:{}, quest:null, realm:null };
   var relicsWon = 0;
 
   function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
@@ -306,7 +310,7 @@
 
   /* ================= INTRO ================= */
   function intro(){
-    hero = { guild:null, guildName:"", deeptech:false, treasure:null, quest:null, realm:null };
+    hero = { guild:null, guildName:"", deeptech:false, treasures:{}, quest:null, realm:null };
     relicsWon = 0; hud.classList.remove("show"); updateHUD();
     setScene("nightsky", 0, "");
     show(
@@ -328,7 +332,7 @@
       '<p class="tale">' + sub + '</p>' +
       '<div class="choices' + (grid ? ' grid' : '') + '">';
     opts.forEach(function(o,i){
-      html += '<button class="choice" data-i="' + i + '"><span class="t">' + o.t + '</span>' +
+      html += '<button class="choice' + (o.wide ? ' wide' : '') + '" data-i="' + i + '"><span class="t">' + o.t + '</span>' +
               (o.d ? '<span class="d">' + o.d + '</span>' : '') + '</button>';
     });
     html += '</div>';
@@ -342,32 +346,55 @@
     forgeScreen(1, "Choose thy guild.",
       "Every company flies a banner. Which is thine?",
       [
-        {t:"⚗️ SaaS Sorcerers", d:"Subscription spells, cast monthly", v:"pass", n:"the SaaS Sorcerers"},
-        {t:"⚒️ Software Smiths", d:"Code forged into product", v:"pass", n:"the Software Smiths"},
-        {t:"🪙 Fintech Forgemasters", d:"Masters of the money magic", v:"pass", n:"the Fintech Forgemasters"},
+        {t:"⚗️ Software Sorcerers", d:"SaaS, fintech, AI — 'software' means everything these days", v:"pass", n:"the Software Sorcerers"},
+        {t:"🔬 Deeptech Alchemists", d:"Years in the lab, world-changing brews", v:"pass", n:"the Deeptech Alchemists", deep:true},
         {t:"🛡️ Consultancy Knights", d:"Wisdom for hire, armour included", v:"pass", n:"the Consultancy Knights"},
         {t:"⚖️ B2B Merchants", d:"Selling to kingdoms, not peasants", v:"pass", n:"the B2B Merchants"},
-        {t:"🔬 Deeptech Alchemists", d:"Years in the lab, world-changing brews", v:"pass", n:"the Deeptech Alchemists", deep:true},
         {t:"🍺 Tavern Keepers", d:"Feeding and delighting the common folk", v:"sector", n:"the Tavern Keepers"},
-        {t:"🏪 Merchants of the Bazaar", d:"Wares for the wandering crowd", v:"sector", n:"the Merchants of the Bazaar"}
+        {t:"🏪 Merchants of the Bazaar", d:"Wares for the wandering crowd", v:"sector", n:"the Merchants of the Bazaar"},
+        {t:"🧭 A Wandering Observer", d:"Investor, advisor, or curious soul — no company banner to fly", v:"observer", wide:true}
       ],
       true,
-      function(o){ hero.guild = o.v; hero.guildName = o.n; hero.deeptech = !!o.deep; q2(); });
+      function(o){
+        if (o.v === "observer") return observer();
+        hero.guild = o.v; hero.guildName = o.n; hero.deeptech = !!o.deep; q2();
+      });
   }
 
   function q2(){
-    forgeScreen(2, "What treasure dost thou carry?",
-      "Be honest, adventurer. The mountain knows.",
-      [
-        {t:"📜 A dream on parchment", d:"An idea, pure and unbuilt", v:"early"},
-        {t:"🗡 A forged blade, yet unsold", d:"The product is built. The world awaits.", v:"pass"},
-        {t:"🪙 First gold from early conquests", d:"Real customers. Real coin.", v:"pass"},
-        {t:"🤝 Kin and allies fund the quest", d:"A friends & family round, bravely raised", v:"pass"},
-        {t:"⚗️ A war chest, but no army", d:"Gold raised to forge the weapon — none yet to sell it", v:"pass"},
-        {t:"🏰 Series A conquered, and beyond", d:"The kingdom grows vast", v:"late"}
-      ],
-      false,
-      function(o){ hero.treasure = o.v; q3(); });
+    setScene("gate", 0, "Before the gate of Kindling");
+    var opts = [
+      {t:"📜 A dream on parchment", d:"An idea, pure and unbuilt", v:"early"},
+      {t:"🗡 A forged blade, yet unsold", d:"The product is built. The world awaits.", v:"blade"},
+      {t:"🪙 First gold from early conquests", d:"Real customers. Real coin.", v:"gold"},
+      {t:"🤝 Kin and allies fund the quest", d:"A friends & family round, bravely raised", v:"kin"},
+      {t:"⚗️ A war chest, but no army", d:"Pre-seed or beyond, raised to forge the weapon — none yet to sell it", v:"chest"},
+      {t:"🏰 Series A conquered, and beyond", d:"The kingdom grows vast", v:"late"}
+    ];
+    var html =
+      '<p class="eyebrow">Forge thy company — 2 of 4</p>' +
+      '<h1>What treasures dost thou carry?</h1>' +
+      '<p class="tale">Choose all that thou carriest. Be honest, adventurer — the mountain knows.</p>' +
+      '<div class="choices">';
+    opts.forEach(function(o,i){
+      html += '<button class="choice" data-i="' + i + '"><span class="t">' + o.t + '</span>' +
+              '<span class="d">' + o.d + '</span></button>';
+    });
+    html += '</div><button class="btn" id="carry" disabled style="margin-top:16px;opacity:.45">🎒 Carry on</button>';
+    show(html);
+    hero.treasures = {};
+    var carry = document.getElementById("carry");
+    Array.prototype.forEach.call(stage.querySelectorAll(".choice"), function(btn){
+      btn.addEventListener("click", function(){
+        var v = opts[+btn.dataset.i].v;
+        hero.treasures[v] = !hero.treasures[v];
+        btn.classList.toggle("sel", hero.treasures[v]);
+        var any = opts.some(function(o){ return hero.treasures[o.v]; });
+        carry.disabled = !any;
+        carry.style.opacity = any ? "1" : ".45";
+      });
+    });
+    carry.addEventListener("click", q3);
   }
 
   function q3(){
@@ -398,16 +425,33 @@
 
   /* ================= THE VERDICT ================= */
   function verdict(){
-    if (hero.guild === "sector")   return failScreen("sector");
-    if (hero.treasure === "early") return failScreen("early");
+    var t = hero.treasures;
+    var anyPass = t.blade || t.gold || t.kin || t.chest;
+    if (hero.guild === "sector") return failScreen("sector");
     /* the deeptech exception: a big war chest raised to forge the
        brew, but still no army — the one late-stage company Kindling
        will climb with */
-    if (hero.treasure === "late" && !(hero.deeptech && hero.quest !== "wander"))
+    if (t.late && !(hero.deeptech && hero.quest !== "wander"))
       return failScreen("late");
-    if (hero.realm === "realm")    return failScreen("realm");
-    if (hero.quest === "wander")   return failScreen("wander");
+    if (!anyPass && !t.late)     return failScreen("early");
+    if (hero.realm === "realm")  return failScreen("realm");
+    if (hero.quest === "wander") return failScreen("wander");
     accepted();
+  }
+
+  /* travellers without a company banner: investors, advisors,
+     the curious — welcomed in, and asked to send their champions */
+  function observer(){
+    setScene("gateopen", 0, "The gates open for travellers");
+    show(
+      '<p class="eyebrow">A traveller at the gate</p>' +
+      '<h1>Welcome, honest <span class="gold">observer</span>.</h1>' +
+      '<p class="tale">Not every soul at the gate flies a company banner. Investors, advisors, wandering scholars — the mountain bids thee <strong>enter freely</strong>.</p>' +
+      '<p class="tale"><em>And shouldst thou know a champion in need of gold or a sales legion… send them to the mountain. We shall forge them armies.</em> 🐉</p>' +
+      '<a class="btn" href="' + SITE + '">Enter the website →</a>' +
+      '<br><button class="quiet" id="again">↺ Begin the climb anew</button>'
+    );
+    on("again", intro);
   }
 
   function accepted(){
@@ -556,7 +600,7 @@
   var FAILS = {
     early:{
       icon:"🌱", title:"Every legend begins with a first coin.",
-      body:"Thy quest is true — but the mountain asks for more than a dream on parchment. When thou art ready to raise gold, or to begin assembling thy mighty squad of sales legends, <strong>return here and conquer</strong>.",
+      body:"Thy quest is true — but the mountain asks for more than a dream on parchment. Thy first quest stands clear: <strong>forge thy blade, win thy first gold, or rally kin and allies to thy cause</strong> — then return here and conquer.",
       formLead:"Leave thy scroll, and I shall summon thee when thy time comes."
     },
     late:{
