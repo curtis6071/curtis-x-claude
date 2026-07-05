@@ -342,19 +342,21 @@
     });
   }
 
-  function q1(){
+  function q1(asProxy){
+    var opts = [
+      {t:"⚗️ Software Sorcerers", d:"SaaS, fintech, AI — 'software' means everything these days", v:"pass", n:"the Software Sorcerers"},
+      {t:"🔬 Deeptech Alchemists", d:"Years in the lab, world-changing brews", v:"pass", n:"the Deeptech Alchemists", deep:true},
+      {t:"🛡️ Consultancy Knights", d:"Wisdom for hire, armour included", v:"pass", n:"the Consultancy Knights"},
+      {t:"⚖️ B2B Merchants", d:"Selling to kingdoms, not peasants", v:"pass", n:"the B2B Merchants"},
+      {t:"🍺 Tavern Keepers", d:"Feeding and delighting the common folk", v:"sector", n:"the Tavern Keepers"},
+      {t:"🏪 Merchants of the Bazaar", d:"Wares for the wandering crowd", v:"sector", n:"the Merchants of the Bazaar"}
+    ];
+    if (!asProxy) opts.push(
+      {t:"🧭 A Wandering Observer", d:"Investor, advisor, or curious soul — no company banner to fly", v:"observer", wide:true});
     forgeScreen(1, "Choose thy guild.",
-      "Every company flies a banner. Which is thine?",
-      [
-        {t:"⚗️ Software Sorcerers", d:"SaaS, fintech, AI — 'software' means everything these days", v:"pass", n:"the Software Sorcerers"},
-        {t:"🔬 Deeptech Alchemists", d:"Years in the lab, world-changing brews", v:"pass", n:"the Deeptech Alchemists", deep:true},
-        {t:"🛡️ Consultancy Knights", d:"Wisdom for hire, armour included", v:"pass", n:"the Consultancy Knights"},
-        {t:"⚖️ B2B Merchants", d:"Selling to kingdoms, not peasants", v:"pass", n:"the B2B Merchants"},
-        {t:"🍺 Tavern Keepers", d:"Feeding and delighting the common folk", v:"sector", n:"the Tavern Keepers"},
-        {t:"🏪 Merchants of the Bazaar", d:"Wares for the wandering crowd", v:"sector", n:"the Merchants of the Bazaar"},
-        {t:"🧭 A Wandering Observer", d:"Investor, advisor, or curious soul — no company banner to fly", v:"observer", wide:true}
-      ],
-      true,
+      asProxy ? "Which banner does thy champion's company fly?"
+              : "Every company flies a banner. Which is thine?",
+      opts, true,
       function(o){
         if (o.v === "observer") return observer();
         hero.guild = o.v; hero.guildName = o.n; hero.deeptech = !!o.deep; q2();
@@ -440,18 +442,18 @@
   }
 
   /* travellers without a company banner: investors, advisors,
-     the curious — welcomed in, and asked to send their champions */
+     the curious — invited to climb on behalf of a champion */
   function observer(){
-    setScene("gateopen", 0, "The gates open for travellers");
+    setScene("gate", 0, "A traveller at the gate");
     show(
-      '<p class="eyebrow">A traveller at the gate</p>' +
-      '<h1>Welcome, honest <span class="gold">observer</span>.</h1>' +
-      '<p class="tale">Not every soul at the gate flies a company banner. Investors, advisors, wandering scholars — the mountain bids thee <strong>enter freely</strong>.</p>' +
-      '<p class="tale"><em>And shouldst thou know a champion in need of gold or a sales legion… send them to the mountain. We shall forge them armies.</em> 🐉</p>' +
-      '<a class="btn" href="' + SITE + '">Enter the website →</a>' +
-      '<br><button class="quiet" id="again">↺ Begin the climb anew</button>'
+      '<p class="eyebrow">The gatekeeper squints</p>' +
+      '<h1>Ah — an <span class="gold">observer</span> among us.</h1>' +
+      '<p class="tale">Investors, advisors, curious souls — most welcome. But the mountain judges <strong>companies</strong>, not travellers.</p>' +
+      '<p class="tale"><em>Climb on behalf of a champion — a company thou fundest, advisest, or believest in — and answer as they would. Their guild, their treasure, their quest.</em></p>' +
+      '<button class="btn" id="proxy">⚔️ Climb for thy champion</button>' +
+      '<br><a class="quiet" href="' + SITE + '">No champion in mind? Pass quietly through the gates →</a>'
     );
-    on("again", intro);
+    on("proxy", function(){ q1(true); });
   }
 
   function accepted(){
