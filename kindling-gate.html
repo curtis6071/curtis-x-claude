@@ -270,12 +270,11 @@
     relicsWon = 0; hud.classList.remove("show"); updateHUD();
     setScene("gate", 0, "The gate stands closed");
     show(
-      '<p class="eyebrow">Kindling Advisory presents</p>' +
+      '<p class="eyebrow">Kindling Advisory</p>' +
       '<h1>Beyond this mountain lies the land of <span class="gold">Kindling</span>.</h1>' +
-      '<p class="tale">Only the right adventurers may pass. Forge thy company, face the three trials, and climb to the summit.</p>' +
-      '<p class="tale" style="font-size:14px">(A 90-second quest guards our advisory for early-stage founders. Win, and the website opens.)</p>' +
+      '<p class="tale">A 90-second quest guards the website. Win your way in.</p>' +
       '<button class="btn" id="begin">⚔️ Begin the climb</button><br>' +
-      '<a class="quiet" href="' + SITE + '">In a hurry, traveller? Skip the quest — enter the website directly →</a>'
+      '<a class="quiet" href="' + SITE + '">In a hurry? Skip the quest →</a>'
     );
     on("begin", q1);
   }
